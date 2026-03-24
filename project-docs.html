@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Vaultr — Project Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --ink: #111;
+    --muted: #555;
+    --light: #888;
+    --border: #ddd;
+    --accent: #5a8a00;
+    --accent-bg: #f4fae0;
+    --code-bg: #f5f5f5;
+    --page: #fff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--ink);
+    background: #e8e8e8;
+  }
+
+  .page {
+    background: var(--page);
+    max-width: 820px;
+    margin: 40px auto;
+    padding: 72px 80px;
+    box-shadow: 0 4px 40px rgba(0,0,0,0.12);
+  }
+
+  /* COVER */
+  .cover {
+    padding-bottom: 56px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 56px;
+  }
+
+  .cover-label {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+
+  .cover-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+
+  .cover-sub {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  .cover-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .meta-label {
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--light);
+  }
+
+  .meta-value {
+    font-size: 12px;
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .meta-value a { color: var(--accent); text-decoration: none; }
+
+  /* TOC */
+  .toc {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 24px 28px;
+    margin-bottom: 56px;
+  }
+
+  .toc-title {
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--light);
+    margin-bottom: 14px;
+  }
+
+  .toc ol {
+    list-style: none;
+    counter-reset: toc;
+  }
+
+  .toc li {
+    counter-increment: toc;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 3px 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .toc li::before {
+    content: counter(toc, decimal-leading-zero);
+    font-size: 10px;
+    color: var(--accent);
+    min-width: 22px;
+  }
+
+  .toc a { color: var(--ink); text-decoration: none; }
+  .toc a:hover { color: var(--accent); }
+
+  /* SECTIONS */
+  section { margin-bottom: 52px; }
+
+  .section-num {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-top: 28px;
+    margin-bottom: 10px;
+  }
+
+  p { margin-bottom: 14px; color: var(--muted); }
+  p strong { color: var(--ink); font-weight: 500; }
+
+  /* CALLOUT */
+  .callout {
+    background: var(--accent-bg);
+    border-left: 3px solid var(--accent);
+    padding: 14px 18px;
+    margin: 20px 0;
+    border-radius: 0 4px 4px 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* CODE */
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 16px 18px;
+    margin: 16px 0;
+    overflow-x: auto;
+    font-size: 11.5px;
+    line-height: 1.65;
+    color: #333;
+  }
+
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #333;
+  }
+
+  pre code { background: none; border: none; padding: 0; }
+
+  /* TABLES */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 12px;
+  }
+
+  th {
+    text-align: left;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--light);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    color: var(--muted);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  td strong { color: var(--ink); }
+
+  tbody tr:nth-child(even) td { background: #fafafa; }
+
+  /* FEATURE LIST */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 16px 0;
+  }
+
+  .feature-item {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 14px 16px;
+  }
+
+  .feature-item-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .feature-item-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* DIVIDER */
+  hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 40px 0;
+  }
+
+  /* FOOTER */
+  .doc-footer {
+    border-top: 2px solid var(--ink);
+    padding-top: 24px;
+    margin-top: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .doc-footer span {
+    font-size: 10px;
+    color: var(--light);
+    letter-spacing: 0.06em;
+  }
+
+  .doc-footer a { color: var(--accent); text-decoration: none; }
+
+  /* PRINT */
+  @media print {
+    body { background: white; }
+    .page { box-shadow: none; margin: 0; padding: 40px 56px; }
+    h2 { page-break-after: avoid; }
+    pre, table { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-label">Project Documentation · v1.0</div>
+    <div class="cover-title">Vaultr</div>
+    <div class="cover-sub">A handpicked developer directory powered by the Orynth community</div>
+    <div class="cover-meta">
+      <div class="meta-item">
+        <span class="meta-label">Version</span>
+        <span class="meta-value">1.0.0</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Date</span>
+        <span class="meta-value">March 2026</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Status</span>
+        <span class="meta-value">Active</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Platform</span>
+        <span class="meta-value"><a href="https://www.vaultr.site" target="_blank">vaultr.site</a></span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">License</span>
+        <span class="meta-value">MIT</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">Table of Contents</div>
+    <ol>
+      <li><a href="#overview">Project Overview</a></li>
+      <li><a href="#architecture">Architecture</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#data-model">Data Model</a></li>
+      <li><a href="#categories">Categories</a></li>
+      <li><a href="#design">Design System</a></li>
+      <li><a href="#setup">Setup &amp; Development</a></li>
+      <li><a href="#customization">Customizing the Tool List</a></li>
+      <li><a href="#api">Connecting to Orynth API</a></li>
+      <li><a href="#deployment">Deployment</a></li>
+      <li><a href="#contributing">Contributing</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+    </ol>
+  </div>
+
+  <!-- 1. OVERVIEW -->
+  <section id="overview">
+    <div class="section-num">// 01</div>
+    <h2>Project Overview</h2>
+    <p><strong>Vaultr</strong> is a static, single-file HTML directory that showcases developer tools and projects from the <a href="https://www.orynth.dev/" style="color:var(--accent)">Orynth</a> community. It provides a clean, fast browsing experience with search, filtering, sorting, and upvoting — all without any backend infrastructure.</p>
+    <p>The goal is to make it easy for developers and users to discover quality tools, navigate by category, and surface community favorites through upvoting. Every tool listed links back to its listing on Orynth.dev, driving traffic to makers who have published there.</p>
+    <div class="callout">
+      <strong>Zero-dependency design:</strong> The entire site is one <code>.html</code> file. No npm, no build step, no server required. Open it in a browser and it works.
+    </div>
+  </section>
+
+  <!-- 2. ARCHITECTURE -->
+  <section id="architecture">
+    <div class="section-num">// 02</div>
+    <h2>Architecture</h2>
+    <p>The site uses a deliberately minimal architecture — all logic, styles, and data live in a single self-contained HTML file.</p>
+    <pre>vaultr/
+├── orynth-tools.html     ← Main site (HTML + CSS + JS, self-contained)
+├── README.md             ← Setup and usage guide
+└── docs/
+    └── project-docs.html ← This document</pre>
+
+    <h3>Technology Stack</h3>
+    <table>
+      <thead><tr><th>Layer</th><th>Technology</th><th>Rationale</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Markup</strong></td><td>HTML5</td><td>Semantic, accessible, no framework overhead</td></tr>
+        <tr><td><strong>Styles</strong></td><td>CSS3 (custom properties)</td><td>Themeable, no preprocessor needed</td></tr>
+        <tr><td><strong>Logic</strong></td><td>Vanilla JavaScript (ES6+)</td><td>No dependencies, fast parse time</td></tr>
+        <tr><td><strong>Fonts</strong></td><td>Google Fonts (Syne, DM Mono)</td><td>Distinctive typography, self-hostable</td></tr>
+        <tr><td><strong>Data</strong></td><td>Static JS array</td><td>Easy to edit; can swap for API fetch</td></tr>
+      </tbody>
+    </table>
+
+    <h3>How It Works</h3>
+    <p>On page load, JavaScript reads the <code>TOOLS</code> array, applies any active filters, and renders cards into a CSS grid. Filter buttons, the search input, and the sort dropdown all call the same <code>render()</code> function, which re-derives the visible list from the current filter state.</p>
+    <p>Upvote state is stored in a <code>Set</code> and an object in memory — it resets on page reload. Persistent upvotes would require a backend or localStorage.</p>
+  </section>
+
+  <!-- 3. FEATURES -->
+  <section id="features">
+    <div class="section-num">// 03</div>
+    <h2>Features</h2>
+    <div class="feature-grid">
+      <div class="feature-item">
+        <div class="feature-item-title">🔍 Live Search</div>
+        <div class="feature-item-desc">Filters tools in real time as you type — matches against name, description, and tags.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-item-title">🏷 Category Filters</div>
+        <div class="feature-item-desc">Pill-style filter buttons for 6 categories. Click to narrow the grid instantly.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-item-title">↑ Upvoting</div>
+        <div class="feature-item-desc">Toggle upvote on any tool card. Counts update live. Session-only (no backend).</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-item-title">⇅ Sorting</div>
+        <div class="feature-item-desc">Sort by top upvotes or newest. Dropdown triggers an instant re-render.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-item-title">★ Featured Banner</div>
+        <div class="feature-item-desc">Editor's Pick slot at the top — highlights a standout tool with a CTA.</div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-item-title">📱 Responsive</div>
+        <div class="feature-item-desc">Grid collapses cleanly on mobile. Nav and stats hide at small breakpoints.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. DATA MODEL -->
+  <section id="data-model">
+    <div class="section-num">// 04</div>
+    <h2>Data Model</h2>
+    <p>Each tool in the <code>TOOLS</code> array follows this schema:</p>
+    <pre>{
+  id:       Number,   // Unique integer identifier
+  name:     String,   // Display name shown on card
+  icon:     String,   // Emoji or Unicode symbol for the card icon
+  category: String,   // Category slug — must match a filter button data-cat
+  desc:     String,   // 1–2 sentence description shown on card
+  tags:     String[], // Array of 2–3 short label strings
+  url:      String,   // External URL (opens in new tab on card click)
+  upvotes:  Number,   // Starting upvote count
+  newest:   Number    // Sort index for "Newest" mode (lower = newer)
+}</pre>
+
+    <h3>Example Entry</h3>
+    <pre>{
+  id: 1,
+  name: "Vercel",
+  icon: "▲",
+  category: "infra",
+  desc: "Deploy web projects instantly. Push to git and get a live URL with edge functions, analytics, and previews built in.",
+  tags: ["Deploy", "Edge", "CI/CD"],
+  url: "https://vercel.com",
+  upvotes: 841,
+  newest: 1
+}</pre>
+  </section>
+
+  <!-- 5. CATEGORIES -->
+  <section id="categories">
+    <div class="section-num">// 05</div>
+    <h2>Categories</h2>
+    <table>
+      <thead><tr><th>Slug</th><th>Label</th><th>Examples</th></tr></thead>
+      <tbody>
+        <tr><td><code>ai</code></td><td>AI / ML</td><td>Replicate, v0, Anthropic API, OpenAI</td></tr>
+        <tr><td><code>devtools</code></td><td>Dev Tools</td><td>Cursor, Zed, Bun, Posthog</td></tr>
+        <tr><td><code>api</code></td><td>APIs</td><td>Resend, Clerk, Liveblocks, Stripe</td></tr>
+        <tr><td><code>ui</code></td><td>UI / Design</td><td>shadcn/ui, Framer Motion, Radix UI</td></tr>
+        <tr><td><code>productivity</code></td><td>Productivity</td><td>Linear, Notion, Arc</td></tr>
+        <tr><td><code>infra</code></td><td>Infra</td><td>Vercel, Supabase, Railway, Neon, Cloudflare</td></tr>
+      </tbody>
+    </table>
+    <p>To add a new category, add a new entry to the <code>TOOLS</code> array with the new slug and add a matching filter button in the HTML.</p>
+    <pre>&lt;button class="filter-btn" data-cat="newcat"&gt;New Category&lt;/button&gt;</pre>
+  </section>
+
+  <!-- 6. DESIGN SYSTEM -->
+  <section id="design">
+    <div class="section-num">// 06</div>
+    <h2>Design System</h2>
+
+    <h3>Color Palette</h3>
+    <table>
+      <thead><tr><th>Variable</th><th>Value</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td><code>--bg</code></td><td>#080808</td><td>Page background</td></tr>
+        <tr><td><code>--surface</code></td><td>#101010</td><td>Input, search background</td></tr>
+        <tr><td><code>--card</code></td><td>#141414</td><td>Tool card background</td></tr>
+        <tr><td><code>--card-hover</code></td><td>#1a1a1a</td><td>Card hover state</td></tr>
+        <tr><td><code>--border</code></td><td>#222</td><td>Default borders</td></tr>
+        <tr><td><code>--accent</code></td><td>#c6f135</td><td>Electric lime — CTAs, highlights</td></tr>
+        <tr><td><code>--text</code></td><td>#f0efe8</td><td>Primary text</td></tr>
+        <tr><td><code>--text-muted</code></td><td>#666</td><td>Secondary / descriptive text</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Typography</h3>
+    <table>
+      <thead><tr><th>Font</th><th>Role</th><th>Weights</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Syne</strong></td><td>Display — headings, logo, tool names</td><td>400, 500, 600, 700, 800</td></tr>
+        <tr><td><strong>DM Mono</strong></td><td>Mono — labels, descriptions, tags, inputs</td><td>300, 400, 500 (+ italic)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Motion</h3>
+    <p>Cards fade up on render using CSS <code>@keyframes fadeUp</code> with staggered <code>animation-delay</code> (40ms per card). Hover states use 180ms transitions on background and opacity. The featured banner has a radial glow that pulses on hover.</p>
+  </section>
+
+  <!-- 7. SETUP -->
+  <section id="setup">
+    <div class="section-num">// 07</div>
+    <h2>Setup &amp; Development</h2>
+
+    <h3>Option 1 — Open directly</h3>
+    <p>No setup required. Open <code>orynth-tools.html</code> in any modern browser.</p>
+
+    <h3>Option 2 — Local server</h3>
+    <pre># Python 3
+python -m http.server 8080
+
+# Node.js
+npx serve .
+
+# Bun
+bun --bun run --hot .
+
+# Then open:
+# http://localhost:8080/orynth-tools.html</pre>
+
+    <h3>Editing the File</h3>
+    <p>Open <code>orynth-tools.html</code> in any text editor. The three main areas to edit are:</p>
+    <table>
+      <thead><tr><th>Area</th><th>Location in file</th></tr></thead>
+      <tbody>
+        <tr><td>Tool data</td><td><code>const TOOLS = [...]</code> in the <code>&lt;script&gt;</code> block</td></tr>
+        <tr><td>CSS variables / theme</td><td><code>:root { ... }</code> near the top of <code>&lt;style&gt;</code></td></tr>
+        <tr><td>Layout / categories</td><td><code>#filters</code> div in the HTML body</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 8. CUSTOMIZATION -->
+  <section id="customization">
+    <div class="section-num">// 08</div>
+    <h2>Customizing the Tool List</h2>
+    <p>Edit the <code>TOOLS</code> array inside the <code>&lt;script&gt;</code> block. Each object must include all required fields from the data model. IDs should be unique integers; <code>newest</code> values should be unique and lower means "more recent".</p>
+
+    <h3>Adding a Tool</h3>
+    <pre>// Add to end of TOOLS array:
+{
+  id: 19,
+  name: "Your Tool",
+  icon: "🚀",
+  category: "devtools",   // Use an existing slug
+  desc: "One or two sentences about what this tool does.",
+  tags: ["Tag1", "Tag2"],
+  url: "https://yourtool.com",
+  upvotes: 0,
+  newest: 19              // Lower = shows first in "Newest" sort
+}</pre>
+
+    <h3>Changing the Featured Tool</h3>
+    <p>Find the <code>.featured-banner</code> div in the HTML body and update the name, description, tags, and the two <code>href</code> and <code>onclick</code> URL references.</p>
+  </section>
+
+  <!-- 9. API -->
+  <section id="api">
+    <div class="section-num">// 09</div>
+    <h2>Connecting to Orynth API</h2>
+    <p>When Orynth exposes a public API, replace the static array with a <code>fetch()</code> call. Example pattern:</p>
+    <pre>async function loadTools() {
+  const res = await fetch('https://api.orynth.dev/projects');
+  const data = await res.json();
+
+  // Map API response to TOOLS schema
+  TOOLS.length = 0; // Clear static array
+  data.projects.forEach((p, i) => {
+    TOOLS.push({
+      id: p.id,
+      name: p.name,
+      icon: p.emoji || '◈',
+      category: p.category_slug,
+      desc: p.short_description,
+      tags: p.tags.slice(0, 3),
+      url: `https://orynth.dev/p/${p.slug}`,
+      upvotes: p.upvote_count,
+      newest: i
+    });
+  });
+
+  document.getElementById('total-count').textContent = TOOLS.length;
+  render();
+}
+
+loadTools();</pre>
+    <div class="callout">Replace the <code>render()</code> call at the bottom of the script with <code>loadTools()</code> to use dynamic data.</div>
+  </section>
+
+  <!-- 10. DEPLOYMENT -->
+  <section id="deployment">
+    <div class="section-num">// 10</div>
+    <h2>Deployment</h2>
+    <p>Because the entire site is a single static HTML file, it can be hosted anywhere with no build configuration.</p>
+    <table>
+      <thead><tr><th>Platform</th><th>Steps</th><th>Cost</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Vercel</strong></td><td>Drag &amp; drop the file in the Vercel dashboard</td><td>Free</td></tr>
+        <tr><td><strong>Netlify</strong></td><td>Drop into Netlify Drop, or connect a GitHub repo</td><td>Free</td></tr>
+        <tr><td><strong>GitHub Pages</strong></td><td>Push to repo root, enable Pages on <code>main</code> branch</td><td>Free</td></tr>
+        <tr><td><strong>Cloudflare Pages</strong></td><td>Connect repo, no build command, publish dir <code>/</code></td><td>Free</td></tr>
+        <tr><td><strong>Railway</strong></td><td>Static site deploy via GitHub repo</td><td>Free tier</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Custom Domain</h3>
+    <p>All platforms above support custom domains. Point your domain's DNS to the platform, add the domain in the dashboard, and SSL is handled automatically.</p>
+  </section>
+
+  <!-- 11. CONTRIBUTING -->
+  <section id="contributing">
+    <div class="section-num">// 11</div>
+    <h2>Contributing</h2>
+    <p>Community contributions are welcome. To add a tool to the directory:</p>
+    <ol style="padding-left: 24px; margin: 12px 0; color: var(--muted);">
+      <li style="margin-bottom: 8px;">Ensure the tool is listed on <a href="https://www.orynth.dev/" style="color:var(--accent)">orynth.dev</a></li>
+      <li style="margin-bottom: 8px;">Fork the repository</li>
+      <li style="margin-bottom: 8px;">Add the tool to the <code>TOOLS</code> array following the schema in Section 4</li>
+      <li style="margin-bottom: 8px;">Keep <code>desc</code> to 1–2 sentences maximum</li>
+      <li style="margin-bottom: 8px;">Submit a pull request with a brief description of the tool</li>
+    </ol>
+
+    <h3>Tool Quality Guidelines</h3>
+    <p>Tools should be actively maintained, publicly accessible, and genuinely useful to developers or makers. Avoid duplicates — check the existing list before submitting. Commercial tools are welcome; tools must not be malware, spam, or violate Orynth's policies.</p>
+  </section>
+
+  <!-- 12. ROADMAP -->
+  <section id="roadmap">
+    <div class="section-num">// 12</div>
+    <h2>Roadmap</h2>
+    <table>
+      <thead><tr><th>Priority</th><th>Feature</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td><strong>High</strong></td><td>Orynth API integration</td><td>Replace static array with live data from orynth.dev</td></tr>
+        <tr><td><strong>High</strong></td><td>Persistent upvotes</td><td>Sync upvotes to Orynth API or localStorage fallback</td></tr>
+        <tr><td><strong>Medium</strong></td><td>Tool detail pages</td><td>Expanded view with screenshots, maker info, external links</td></tr>
+        <tr><td><strong>Medium</strong></td><td>Collections</td><td>Curated lists (e.g., "Best free tools", "AI stack 2026")</td></tr>
+        <tr><td><strong>Medium</strong></td><td>Maker profiles</td><td>Link tools to their Orynth maker page</td></tr>
+        <tr><td><strong>Low</strong></td><td>Dark / light toggle</td><td>User-preferred theme with localStorage persistence</td></tr>
+        <tr><td><strong>Low</strong></td><td>Submit modal</td><td>In-page form that deep-links to orynth.dev submission</td></tr>
+        <tr><td><strong>Low</strong></td><td>RSS / changelog</td><td>Weekly digest of new tools added to the directory</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr/>
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <span>Vaultr · Project Documentation · v1.0</span>
+    <span>Powered by <a href="https://www.orynth.dev/">orynth.dev</a></span>
+  </div>
+
+</div>
+</body>
+</html>

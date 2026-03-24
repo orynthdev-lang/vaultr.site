@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vaultr — Curated Tools & Projects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #080808;
+      --surface: #101010;
+      --card: #141414;
+      --card-hover: #1a1a1a;
+      --border: #222;
+      --border-bright: #333;
+      --accent: #c6f135;
+      --accent-dim: rgba(198,241,53,0.12);
+      --accent-glow: rgba(198,241,53,0.25);
+      --text: #f0efe8;
+      --text-muted: #666;
+      --text-dim: #444;
+      --tag-bg: #1c1c1c;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 180px;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.5;
+    }
+
+    /* HEADER */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(8,8,8,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+    }
+    .header-inner {
+      max-width: 1280px; margin: 0 auto; height: 56px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-mark {
+      width: 32px; height: 32px; background: var(--accent);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .logo-mark svg { width: 15px; height: 15px; }
+    .logo-text { font-size: 1rem; font-weight: 700; color: var(--text); letter-spacing: 0.08em; text-transform: uppercase; }
+    .logo-text span { color: var(--accent); }
+    nav { display: flex; align-items: center; gap: 2rem; }
+    nav a { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--text-muted); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+    nav a:hover { color: var(--text); }
+    .nav-submit { background: var(--accent); color: #080808 !important; padding: 6px 14px; border-radius: 4px; font-weight: 500; }
+    .nav-submit:hover { opacity: 0.85; }
+
+    /* HERO */
+    .hero {
+      max-width: 1280px; margin: 0 auto; padding: 80px 2rem 60px;
+      display: grid; grid-template-columns: 1fr auto; gap: 2rem;
+      align-items: end; border-bottom: 1px solid var(--border);
+    }
+    .hero-label {
+      font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent);
+      letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .hero-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--accent); }
+    h1 { font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 800; line-height: 1.05; letter-spacing: -0.03em; max-width: 620px; }
+    h1 em { font-style: normal; color: var(--accent); }
+    .hero-sub { margin-top: 20px; font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; max-width: 480px; }
+    .hero-stats { display: flex; flex-direction: column; gap: 1px; text-align: right; }
+    .stat { padding: 16px 0 16px 24px; border-left: 1px solid var(--border); }
+    .stat-num { font-size: 2rem; font-weight: 800; color: var(--text); line-height: 1; }
+    .stat-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
+
+    /* TOOLBAR */
+    .toolbar {
+      max-width: 1280px; margin: 0 auto; padding: 24px 2rem;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      border-bottom: 1px solid var(--border);
+    }
+    .search-wrap { position: relative; flex: 1; min-width: 200px; max-width: 340px; }
+    .search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
+    .search-input {
+      width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+      padding: 9px 12px 9px 36px; font-family: 'DM Mono', monospace; font-size: 0.78rem;
+      color: var(--text); outline: none; transition: border-color 0.2s;
+    }
+    .search-input::placeholder { color: var(--text-dim); }
+    .search-input:focus { border-color: var(--accent); }
+    .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+    .filter-btn {
+      font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 6px 14px; border: 1px solid var(--border);
+      border-radius: 100px; background: transparent; color: var(--text-muted);
+      cursor: pointer; transition: all 0.18s; white-space: nowrap;
+    }
+    .filter-btn:hover { border-color: var(--border-bright); color: var(--text); }
+    .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #080808; }
+    .sort-wrap { margin-left: auto; }
+    .sort-select {
+      font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.06em;
+      text-transform: uppercase; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; color: var(--text-muted); padding: 7px 12px; outline: none; cursor: pointer;
+    }
+
+    /* MAIN */
+    .main { max-width: 1280px; margin: 0 auto; padding: 32px 2rem 80px; }
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .section-title { font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+    .count-badge { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--text-dim); letter-spacing: 0.06em; }
+
+    /* FEATURED */
+    .featured-banner {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 28px 32px; display: grid; grid-template-columns: 1fr auto;
+      align-items: center; gap: 24px; margin-bottom: 32px; position: relative;
+      overflow: hidden; cursor: pointer; transition: border-color 0.2s;
+      text-decoration: none; color: inherit;
+    }
+    .featured-banner::before {
+      content: ''; position: absolute; top: -40px; right: -40px; width: 180px; height: 180px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); pointer-events: none;
+    }
+    .featured-banner:hover { border-color: var(--accent); }
+    .featured-tag {
+      font-family: 'DM Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--accent); background: var(--accent-dim);
+      border: 1px solid rgba(198,241,53,0.2); padding: 3px 10px;
+      border-radius: 100px; display: inline-block; margin-bottom: 10px;
+    }
+    .featured-name { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+    .featured-desc { font-family: 'DM Mono', monospace; font-size: 0.78rem; color: var(--text-muted); line-height: 1.65; max-width: 500px; }
+    .featured-tags { display: flex; gap: 6px; margin-top: 14px; }
+    .featured-cta {
+      background: var(--accent); color: #080808; border: none; padding: 10px 22px;
+      border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 0.72rem;
+      font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+      cursor: pointer; white-space: nowrap; transition: opacity 0.18s;
+      text-decoration: none; display: inline-block;
+    }
+    .featured-cta:hover { opacity: 0.82; }
+
+    /* GRID */
+    .tools-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1px; background: var(--border); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+    }
+    .tool-card {
+      background: var(--card); padding: 24px; cursor: pointer;
+      transition: background 0.18s; display: flex; flex-direction: column;
+      text-decoration: none; color: inherit; animation: fadeUp 0.4s ease both;
+    }
+    .tool-card:hover { background: var(--card-hover); }
+    .tool-card:hover .tool-arrow { opacity: 1; transform: translate(2px, -2px); }
+    .tool-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+    .tool-icon {
+      width: 40px; height: 40px; border-radius: 8px; background: var(--surface);
+      border: 1px solid var(--border-bright); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+    }
+    .tool-arrow { color: var(--text-dim); opacity: 0; transition: all 0.18s; font-size: 0.9rem; }
+    .tool-name { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 6px; }
+    .tool-desc { font-family: 'DM Mono', monospace; font-size: 0.74rem; color: var(--text-muted); line-height: 1.65; flex: 1; margin-bottom: 16px; }
+    .tool-footer { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
+    .tool-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+    .tag {
+      font-family: 'DM Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 3px 8px; border-radius: 3px;
+      background: var(--tag-bg); color: var(--text-muted); border: 1px solid var(--border);
+    }
+    .tag.accent { background: var(--accent-dim); color: var(--accent); border-color: rgba(198,241,53,0.15); }
+    .upvote-btn {
+      display: flex; align-items: center; gap: 5px; font-family: 'DM Mono', monospace;
+      font-size: 0.68rem; color: var(--text-muted); background: none;
+      border: 1px solid var(--border); padding: 4px 10px; border-radius: 4px;
+      cursor: pointer; transition: all 0.18s;
+    }
+    .upvote-btn:hover, .upvote-btn.voted { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+    .empty-state { grid-column: 1/-1; padding: 60px; text-align: center; background: var(--card); }
+    .empty-state p { font-family: 'DM Mono', monospace; font-size: 0.82rem; color: var(--text-muted); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 24px 2rem; }
+    .footer-inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-text { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--text-dim); letter-spacing: 0.06em; }
+    .footer-text a { color: var(--accent); text-decoration: none; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero    { animation: fadeUp 0.5s ease both; }
+    .toolbar { animation: fadeUp 0.5s 0.1s ease both; }
+    .main    { animation: fadeUp 0.5s 0.18s ease both; }
+
+    /* ── TABLET ── */
+    @media (max-width: 900px) {
+      .tools-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-stats { display: none; }
+      .hero { grid-template-columns: 1fr; padding: 48px 1.5rem 40px; }
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 600px) {
+      /* Header */
+      header { padding: 0 1rem; }
+      .header-inner { height: 52px; }
+      nav a:not(.nav-submit) { display: none; }
+      .nav-submit { padding: 5px 10px; font-size: 0.65rem; }
+
+      /* Hero */
+      .hero { padding: 36px 1rem 32px; }
+      h1 { font-size: 2rem; }
+      .hero-sub { font-size: 0.75rem; }
+
+      /* Toolbar */
+      .toolbar { padding: 16px 1rem; gap: 10px; }
+      .search-wrap { max-width: 100%; min-width: 0; width: 100%; }
+      .search-input { width: 100%; font-size: 0.75rem; }
+      .filters { width: 100%; overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+      .filters::-webkit-scrollbar { display: none; }
+      .filter-btn { font-size: 0.62rem; padding: 5px 10px; flex-shrink: 0; }
+      .sort-wrap { margin-left: 0; width: 100%; }
+      .sort-select { width: 100%; font-size: 0.65rem; }
+
+      /* Main */
+      .main { padding: 20px 1rem 60px; }
+
+      /* Featured banner */
+      .featured-banner { grid-template-columns: 1fr; padding: 20px; gap: 16px; }
+      .featured-name { font-size: 1.15rem; }
+      .featured-desc { font-size: 0.72rem; }
+      .featured-cta { width: 100%; text-align: center; padding: 10px; }
+
+      /* Tools grid — single column on mobile */
+      .tools-grid { grid-template-columns: 1fr; }
+      .tool-card { padding: 18px; }
+      .tool-desc { font-size: 0.72rem; }
+
+      /* Footer */
+      footer { padding: 20px 1rem; }
+      .footer-inner { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .footer-inner img { width: 180px; height: auto; }
+      .footer-text { font-size: 0.62rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a href="#" class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 16 16" fill="none">
+          <polygon points="8,3 14,13 2,13" fill="#080808"/>
+        </svg>
+      </div>
+      <span class="logo-text">Vault<span>r</span></span>
+    </a>
+    <nav>
+      <a href="#">Browse</a>
+      <a href="#">Collections</a>
+      <a href="#">Makers</a>
+      <a href="https://x.com/vaultrdev" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:5px;">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        @vaultrdev
+      </a>
+      <a href="https://www.orynth.dev/" target="_blank" class="nav-submit">+ Submit Tool</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div>
+    <div class="hero-label">Vaultr · Curated</div>
+    <h1>The best tools &amp; projects for <em>devs</em> — handpicked.</h1>
+    <p class="hero-sub">Discover, upvote, and ship with the tools that matter. Sourced from the Vaultr community and curated for quality.</p>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">18</div>
+      <div class="stat-label">Tools Listed</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">6</div>
+      <div class="stat-label">Categories</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Things to Build</div>
+    </div>
+  </div>
+</section>
+
+<div class="toolbar">
+  <div class="search-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input class="search-input" type="text" id="search" placeholder="Search tools..." />
+  </div>
+  <div class="filters" id="filters">
+    <button class="filter-btn active" data-cat="all">All</button>
+    <button class="filter-btn" data-cat="ai">AI / ML</button>
+    <button class="filter-btn" data-cat="devtools">Dev Tools</button>
+    <button class="filter-btn" data-cat="api">APIs</button>
+    <button class="filter-btn" data-cat="ui">UI / Design</button>
+    <button class="filter-btn" data-cat="productivity">Productivity</button>
+    <button class="filter-btn" data-cat="infra">Infra</button>
+  </div>
+  <div class="sort-wrap">
+    <select class="sort-select" id="sort">
+      <option value="upvotes">↑ Top Upvoted</option>
+      <option value="newest">★ Newest</option>
+    </select>
+  </div>
+</div>
+
+<main class="main">
+  <div class="section-header">
+    <div class="section-title">// featured this week</div>
+  </div>
+
+  <a class="featured-banner" href="https://www.orynth.dev/" target="_blank">
+    <div>
+      <div class="featured-tag">★ Editor's Pick</div>
+      <div class="featured-name">Vaultr</div>
+      <div class="featured-desc">The launch platform where makers list their products, get discovered, and earn. Submit your project, get upvoted by the dev community, and grow your user base organically.</div>
+      <div class="featured-tags">
+        <span class="tag accent">Launch</span>
+        <span class="tag">Community</span>
+        <span class="tag">Discovery</span>
+      </div>
+    </div>
+    <span class="featured-cta">Visit →</span>
+  </a>
+
+  <div class="section-header" style="margin-top:32px;">
+    <div class="section-title">// all tools</div>
+    <div class="count-badge" id="count-display">18 tools</div>
+  </div>
+  <div class="tools-grid" id="tools-grid"></div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <span class="footer-text">Powered by <a href="https://www.vaultr.site" target="_blank">Vaultr</a> — list your product &amp; earn · <a href="project-docs.html" target="_blank">Docs</a> · <a href="https://github.com/orynthdev-lang" target="_blank" rel="noopener">GitHub</a></span>
+    <span class="footer-text">
+      Community-curated · Updated daily ·
+      <a href="https://x.com/vaultrdev" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:4px;">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        @vaultrdev
+      </a>
+    </span>
+    <a href="https://orynth.dev/projects/orynthdev" target="_blank" rel="noopener">
+      <img src="https://orynth.dev/api/badge/orynthdev?theme=light&style=default" alt="Featured on Orynth" width="260" height="80" style="display:block;"/>
+    </a>
+  </div>
+</footer>
+
+<script>
+  const TOOLS = [
+    { id:1,  name:"Vercel",             icon:"▲", category:"infra",        desc:"Deploy web projects instantly. Push to git and get a live URL with edge functions, analytics, and previews built in.",                tags:["Deploy","Edge","CI/CD"],      url:"https://vercel.com",             upvotes:841, newest:1  },
+    { id:2,  name:"Supabase",           icon:"⚡", category:"infra",        desc:"Open source Firebase alternative. Postgres database, auth, storage, realtime subscriptions — all in one platform.",               tags:["Database","Auth","Backend"],  url:"https://supabase.com",           upvotes:720, newest:2  },
+    { id:3,  name:"Cursor",             icon:"⊡", category:"devtools",     desc:"AI-first code editor built on VS Code. Write, edit, and debug code with an AI that understands your entire codebase.",              tags:["AI","Editor","Code"],         url:"https://cursor.sh",              upvotes:964, newest:3  },
+    { id:4,  name:"Replicate",          icon:"◈", category:"ai",           desc:"Run open-source ML models with a simple API. Deploy your own models in seconds, no ML infra expertise needed.",                     tags:["ML","API","Models"],          url:"https://replicate.com",          upvotes:512, newest:4  },
+    { id:5,  name:"shadcn/ui",          icon:"◻", category:"ui",           desc:"Beautifully designed components built with Radix UI and Tailwind. Copy, paste, own your components forever.",                       tags:["React","UI","Tailwind"],      url:"https://ui.shadcn.com",          upvotes:893, newest:5  },
+    { id:6,  name:"Railway",            icon:"⬡", category:"infra",        desc:"Deploy anything, zero config. Provision infrastructure, develop locally with that infra, and deploy to the cloud.",                 tags:["Deploy","Docker","PaaS"],     url:"https://railway.app",            upvotes:641, newest:6  },
+    { id:7,  name:"Resend",             icon:"✉", category:"api",          desc:"Email API for developers. Send transactional emails with React components, built by the Vercel team.",                              tags:["Email","API","React"],        url:"https://resend.com",             upvotes:588, newest:7  },
+    { id:8,  name:"Zed",                icon:"◇", category:"devtools",     desc:"High-performance, multiplayer code editor written in Rust for near-zero latency and real-time collaboration.",                      tags:["Editor","Rust","Collab"],     url:"https://zed.dev",                upvotes:477, newest:8  },
+    { id:9,  name:"Posthog",            icon:"◉", category:"devtools",     desc:"Open-source product analytics, session recording, feature flags, and A/B testing in one. Self-host or cloud.",                     tags:["Analytics","Open Source"],    url:"https://posthog.com",            upvotes:405, newest:9  },
+    { id:10, name:"Cloudflare Workers", icon:"☁", category:"infra",        desc:"Run JavaScript on the edge. Near-zero cold starts, 300+ global locations, and a generous free tier included.",                     tags:["Edge","Serverless","JS"],     url:"https://workers.cloudflare.com", upvotes:739, newest:10 },
+    { id:11, name:"v0 by Vercel",       icon:"✦", category:"ai",           desc:"Generate UI with AI. Describe your component, get production-ready React and Tailwind code instantly.",                            tags:["AI","UI","React"],            url:"https://v0.dev",                 upvotes:826, newest:11 },
+    { id:12, name:"Neon",               icon:"◐", category:"infra",        desc:"Serverless Postgres with branching. Scale to zero, branch your database like you branch your code.",                               tags:["Postgres","Serverless","DB"], url:"https://neon.tech",              upvotes:361, newest:12 },
+    { id:13, name:"Clerk",              icon:"⬗", category:"api",          desc:"Authentication and user management as a service. Drop-in auth with beautiful pre-built components.",                               tags:["Auth","Users","API"],         url:"https://clerk.com",              upvotes:558, newest:13 },
+    { id:14, name:"Linear",             icon:"◇", category:"productivity", desc:"Issue tracking built for high-performance teams. Streamlined workflows, keyboard-first, blisteringly fast.",                       tags:["Issues","Planning","Teams"],  url:"https://linear.app",             upvotes:672, newest:14 },
+    { id:15, name:"Framer Motion",      icon:"⬗", category:"ui",           desc:"Production-ready animation library for React. Declarative animations, gestures, and layout transitions.",                          tags:["Animation","React","UI"],     url:"https://www.framer.com/motion",  upvotes:491, newest:15 },
+    { id:16, name:"Anthropic API",      icon:"✺", category:"ai",           desc:"Build with Claude — fast, safe, and intelligent. Structured outputs, vision, tool use, and 200K context window.",                 tags:["LLM","API","Claude"],         url:"https://anthropic.com",          upvotes:754, newest:16 },
+    { id:17, name:"Bun",                icon:"◎", category:"devtools",     desc:"All-in-one JavaScript runtime and toolkit. Drop-in Node.js replacement with native speed — up to 4× faster.",                     tags:["Runtime","JS","Toolchain"],   url:"https://bun.sh",                 upvotes:683, newest:17 },
+    { id:18, name:"Liveblocks",         icon:"⊕", category:"api",          desc:"Add real-time collaboration to any app. Presence, cursors, comments, and collaborative editing APIs.",                             tags:["Realtime","Collab","API"],    url:"https://liveblocks.io",          upvotes:318, newest:18 },
+  ];
+
+  let voted = new Set();
+  let counts = Object.fromEntries(TOOLS.map(t => [t.id, t.upvotes]));
+  let activeCat = 'all', activeSort = 'upvotes', query = '';
+
+  function filtered() {
+    let list = [...TOOLS];
+    if (activeCat !== 'all') list = list.filter(t => t.category === activeCat);
+    if (query) {
+      const q = query.toLowerCase();
+      list = list.filter(t => t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q) || t.tags.some(g => g.toLowerCase().includes(q)));
+    }
+    list.sort((a, b) => activeSort === 'upvotes' ? counts[b.id] - counts[a.id] : a.newest - b.newest);
+    return list;
+  }
+
+  function render() {
+    const list = filtered();
+    document.getElementById('count-display').textContent = `${list.length} tool${list.length !== 1 ? 's' : ''}`;
+    const grid = document.getElementById('tools-grid');
+    if (!list.length) {
+      grid.innerHTML = `<div class="empty-state"><p>No tools found — try a different search or filter.</p></div>`;
+      return;
+    }
+    grid.innerHTML = list.map((t, i) => `
+      <a class="tool-card" href="${t.url}" target="_blank" rel="noopener" style="animation-delay:${i*0.04}s">
+        <div class="tool-card-top">
+          <div class="tool-icon">${t.icon}</div>
+          <span class="tool-arrow">↗</span>
+        </div>
+        <div class="tool-name">${t.name}</div>
+        <div class="tool-desc">${t.desc}</div>
+        <div class="tool-footer">
+          <div class="tool-tags">${t.tags.map(g => `<span class="tag">${g}</span>`).join('')}</div>
+          <button class="upvote-btn ${voted.has(t.id)?'voted':''}" data-id="${t.id}" onclick="upvote(event,${t.id})">
+            ▲ <span id="uv-${t.id}">${counts[t.id]}</span>
+          </button>
+        </div>
+      </a>
+    `).join('');
+  }
+
+  function upvote(e, id) {
+    e.preventDefault(); e.stopPropagation();
+    voted.has(id) ? (voted.delete(id), counts[id]--) : (voted.add(id), counts[id]++);
+    document.getElementById(`uv-${id}`).textContent = counts[id];
+    e.currentTarget.classList.toggle('voted', voted.has(id));
+  }
+
+  document.getElementById('filters').addEventListener('click', e => {
+    if (!e.target.dataset.cat) return;
+    activeCat = e.target.dataset.cat;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    render();
+  });
+  document.getElementById('search').addEventListener('input', e => { query = e.target.value; render(); });
+  document.getElementById('sort').addEventListener('change', e => { activeSort = e.target.value; render(); });
+
+  render();
+</script>
+</body>
+</html>
